@@ -48,7 +48,7 @@ import java.sql.* ;
  */
 public class ReadFile {
 
-    public static void appLogic(){
+    public static Connection connect(){
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException ex) {
@@ -66,6 +66,8 @@ public class ReadFile {
         } else {
             System.out.println("Failed to make connection");
         }
+
+        return conn;
     }
 
     /**
@@ -74,32 +76,26 @@ public class ReadFile {
     public static void main(String[] args) {
         // TODO code application logic here
 
-        //appLogic();
+        Connection conn = connect();
+
         String line;
         String splitter=",";
-        String[] token;
+        List<String[]> list = new ArrayList<>();
 
-        List<String> list=new ArrayList<String>();
-        try {
-          /*
-           to read data from file
-           */
-            BufferedReader br=new BufferedReader(new FileReader("artists-songs-albums-tags.csv"));
+        try( BufferedReader br=new BufferedReader(new FileReader("artists-songs-albums-tags.csv")) ) {
 
             while((line=br.readLine())!=null){
-                token=line.split(splitter);  // to separate each word afer looking " , " in the file and make it as token
-                for (int i=0;i<token.length;i++){
-                    list.add(token[i]);
+
+                list.add(line.split(splitter));  // to separate each word afer looking " , " in the file and make it as token
+            }
+
+            for (String [] a : list){
+                for(String s : a ){
+                    System.out.print(s + " ") ;
                 }
 
+                System.out.println();
             }
-            // convert the list into array
-            String[] arrString=list.toArray(new String[list.size()]);
-            for (int  i=0; i<list.size();i++){
-                System.out.println(arrString[i]);
-            }
-
-            br.close();
         }
 
 
